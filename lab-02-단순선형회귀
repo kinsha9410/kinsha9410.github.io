@@ -1,0 +1,38 @@
+# kinsha9410.github.io
+github page
+
+import tensorflow as tf   # tensorflow 를 import
+import numpy as np
+tf.enable_eager_execution() # eager_execution 활성화
+
+# Data
+x_data = [1, 2, 3, 4, 5] # 입력값
+y_data = [1, 2, 3, 4, 5] # 산출량
+  # 입력과 출력이 같은 모델, x와 y가 같게 간단한 모델을 두고 H(x) = Wx + b 예측 값에서 W와 b를 간단히 예측해봄 # w= 1 b = 0 예측
+
+# W, b initialize
+W = tf.Variable(2.9) # 2.9를 초기 랜덤값 으로 지정
+b = tf.Variable(0.5) # 0.5를 초기 랜덤값 으로 지정
+
+learning_rate = 0.01 # learning_rate는 grad를 얼마나 반영할지 결정 주로 작은 값 사용
+
+# W, b update
+for i in range(100): # w 와 b를 100번 업데이트 함
+    # Gradient descent (경사 하강법) cost를 mimize 하는 W,b를 찾는 알고리즘
+    with tf.GradientTape() as tape: # 변수들의 정보(W , b)를 tape에 기록함
+        hypothesis = W * x_data + b # 우리의 가설 함수 H(x) = Wx + b
+        cost = tf.reduce_mean(tf.square(hypothesis - y_data)) # {Hypothesis(예측) - y(실제값)}(에러) square(제곱)의 평균값
+             # reduce 는 차원(랭크)가 줄어들면서  mean을 구함
+    W_grad, b_grad = tape.gradient(cost, [W, b]) # tape에 기록된 값을 불러와 cost 함수의 변수들(W,b)를 미분하여 gradient(기울기)를 구함
+          #W에 대한 기울기는 W_grad b에 대한 기울기는 b_grad 각각 임명함
+    W.assign_sub(learning_rate * W_grad) # W 업데이트
+    b.assign_sub(learning_rate * b_grad) # b 업데이트
+             # assign_sub 는 뺀 값을 다시 그 값에 할당해 준다 , learning_rate는 grad값을 얼마나 반영할지 결정
+    if i % 10 == 0: # i 값이 10의배수가 될때마다 변해가는 값을 출력
+      print("{:5}|{:10.4f}|{:10.4f}|{:10.6f}".format(i, W.numpy(), b.numpy(), cost))
+
+print()
+
+# predict
+print(W * 5 + b)
+print(W * 2.5 + b)
