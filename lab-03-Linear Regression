@@ -1,0 +1,85 @@
+# kinsha9410.github.io
+github page
+
+import numpy as np           #numpy를 import
+x = np.array([1,2,3])        # 입력값 1, 2, 3 
+y = np.array([1,2,3])        # 출력값 1, 2, 3
+
+def cost_func(W,X,Y):   # w 값이 주어졌을 때 cost를 계산하는 함수
+  hypothesis = X * W    # hypothesis 값은 X 곱하기 W
+  return tf.reduce_mean(tf.square(hypothesis - Y)) #hypothesis 에서 Y를 빼고 평균을 내서 cost 값을 나타낸다
+  
+ W_values = np.linspace(-3, 5, num=15)    # -3에서 5까지 15개의 구간으로 나눈다
+ cost_values = []
+
+for feed_w in w_values:       # 받는 list값을 하나 하나 뽑아낸다         
+    curr_cost = cost_func(feed_w,x,y)           # w값을 사용하여 cost 값이 어떻게 변하는지 기록
+    cost_values.append(curr_cost)               # 변하는 cost 값을 계속 list에 추가
+    print("{:6.3f} | {:10.5f}".format(feed_w , curr_cost)) #변한 값을 출력
+
+# feed_w     curr_cost
+-3.000 |   74.66667            # w은 -3 에서 5까지 변함
+-2.429 |   54.85714
+-1.857 |   38.09524            # cost 는 w가 1일때 최소가 되었다 다시 증가함    
+-1.286 |   24.38095
+-0.714 |   13.71429
+-0.143 |    6.09524
+ 0.429 |    1.52381
+ 1.000 |    0.00000
+ 1.571 |    1.52381
+ 2.143 |    6.09524
+ 2.714 |   13.71429
+ 3.286 |   24.38095
+ 3.857 |   38.09524
+ 4.429 |   54.85714
+ 5.000 |   74.66667
+
+# Gradient descent 
+
+ tf.set_random_seed(0)   # for reproducibility    # random_seed를 특정한 값으로 초기화 시켜 다음에 재현해도 동일하게 재현시킬 수 있도록 한다.
+ x_data = [1.,2.,3.,4.]      #입력값
+ y_data = [1.,3.,5.,7.]      #출력값
+ w=tf.Variable(tf.random_normal([1],-100.,100.))    # random_normal 에서 정규분포를 따르는 random number를 1개짜리로 변수를 만들어서 W 정의
+ for step in range(300):  # gradient, descent 부분을 300번 진행    
+    hypothesis = W * X    # hypothesis 정의
+    cost = tf.reduce_mean(tf.square(hypothesis - Y))    # cost는 (예측값 - 실제값) 제곱의 평균으로 정의
+
+    alpha = 0.01
+    gradient = tf.reduce_mean(tf.multiply(tf.multiply(W,X)-Y,X) # {W(xi) - y} * X의 평균을 구한것이 gradient(기울기)
+    descent= W - tf.multiply(alpha,gradient) # W - 구한 gradient에 alpha값을 곱한 값 = 새로운 W 값                                              
+    W.assign(descent)     # 새로운 W 값을 임명해서 업데이트 한다
+    
+    if step % 10 == 0: # 10번의 한번씩 cost값과 W값을 출력
+        print('{:5}|{:10.4f}|{:10.6f}'.format(step,cost.numpy(),w.numpy()[0]))
+                       
+    
+#  step   cost        w  
+    0|11716.3086| 48.767971
+   10| 4504.9126| 30.619968                    # cost값이 엄청 큰값에 출발하여 0값에 수렴해간다.
+   20| 1732.1364| 19.366755                    # w값은 1에 수렵해간다
+   30|  666.0052| 12.388859                    # W값에 다른 특정한값을 넣어도 초기의 값은 다를 수 있지만 cost는 0으로 수렴해가고 W는 
+   50|   98.4620|  5.379007                     #특정값으로 수렴해 간다.
+   60|   37.8586|  3.715335
+   70|   14.5566|  2.683725
+   80|    5.5970|  2.044044
+   90|    2.1520|  1.647391
+  100|    0.8275|  1.401434
+  110|    0.3182|  1.248922
+  120|    0.1223|  1.154351
+  130|    0.0470|  1.095710
+  140|    0.0181|  1.059348
+  150|    0.0070|  1.036801
+  160|    0.0027|  1.022819
+  170|    0.0010|  1.014150
+  180|    0.0004|  1.008774
+  190|    0.0002|  1.005441
+  200|    0.0001|  1.003374
+  210|    0.0000|  1.002092
+  220|    0.0000|  1.001297
+  230|    0.0000|  1.000804
+  240|    0.0000|  1.000499
+  250|    0.0000|  1.000309
+  260|    0.0000|  1.000192
+  270|    0.0000|  1.000119
+  280|    0.0000|  1.000074
+  290|    0.0000|  1.000046
