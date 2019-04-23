@@ -1,0 +1,41 @@
+# kinsha9410.github.io
+github page
+
+import tensorflow.contrib.eager as tfe       # tensorflow 라이브러리 가져 온다
+tf.enable_eager_execution()                  # enable_eager 모드로 실행함
+dataset = tf.data.Dataset.form_tensor)_slices((x_train, y_train)).batch(len(x_train))   
+    # tf데이터를 통해서 원하는 x값과 y값을 실제 x의 길이만큼 batch로 학습하겠다는것을 dataset으로 가져온다
+w = tf.Variable(tf.zeros([2,1]), name='weight')  # 2행 1열로 모델을 만든다
+b = tf.Variable(tf.zeros([1]), name='bias')      # bias 값을 만들어 원하는 값을 구해낸다
+
+def logistic_regression(featrues):
+  hypothesis = tf.div(1., 1, + tf.exp(tf.matmul(features, W) + b))
+     # W(x) + b에 데한 linear한 값을 exp(sigmoid funtion) 시그모이드 함수를 구해 logistic legression을 구하기 위한 hypothesis 지정
+  return hypothesis
+def loss_fn(features, labels):   
+  hypothesis = logistic_regression(features) # features 값이 들어와 오류를 없애기 위해 hypothesis를 호출
+  cost = -tf.reduce_mean(label * tf.log(loss_fn(hypothesis) + (1 - labels) * tf.log(1 - hypothesis))
+  return cost   # label 값과 hypothesis를 통하여 cost 값을 구한다.
+def grad(hypothesis, features, labels): # 학습을 위해 hypothesis와 label 출력
+    with tf.GradientTape() as tape:
+        loss_value = loss_fn(hypothesis,labels)   # loss를 통해 가설값과 실제값 비교한 loss_value 값 구함
+    return tape.gradient(loss_value, [W,b]) # gradient를 통해 실제 모델값을 계속 바꿔 나간다
+optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.01)    
+     # GradientDescentOptimizer 를 통해 실제 이동할 learing_rate를 통하여 optimizer값 지정
+
+for step in range(EPOCHS): # 함수를 EPOCHs만큼 반복한다
+    for features, labels in tfe.Iterator(dataset):  # dataset을 가져온 토대로 X값과 Y값을 넣어가며 모델을 만든다 
+        grads = grad(logistic_regression(features), features, labels) 
+                    # 출력된 x값과 y값을 가설을 통하여 학습을 위한 grads를 만듬
+        optimizer.apply_gradients(grads_and_vars=zip(grads,[W,b])) # w,b를 계속 업데이트하여 cost 값을 최소화 한다.
+        if step % 100 == 0: # 100번에 한번 출력 step과 loss, label값 # 100번마다 Iter, loss값 출력
+            print("Iter: {}, Loss: {:.4f}".format(step, loss_fn(logistic_regression(features) ,labels)))
+
+def accuracy_fn(hypothesis, labels): # 가설과 실제값을 비교
+    predicted = tf.cast(hypothesis > 0.5, dtype=tf.float32) 
+            # logistic funtion을 통해 나온 0 과 1 사이의 sigmoid funtion을 decision boundary(0.5)를 통해 예측된 값이 나오게 된다.
+    accuracy = tf.reduce_mean(tf.cast(tf.equal(predicted, labels), dtype=tf.int32))  
+             # 예측값과 실제값을 비교하여 맞는지 틀린 accuracy로 출력
+    return accuracy
+
+test_acc = accuracy_fn(logistic_regression(x_test),y_test) # logistic_regression = hypothesis가 정확한지 출력
